@@ -70,8 +70,20 @@ cat <<EOF
 <script type="text/javascript" src="script.js"/>
 EOF
 
+if test -n "$publication"
+then
+	pm_object=$(sh get-object.sh "$publication" "$tmp")
+	pm_object_status=$?
+fi
+
 # Fetch the object
-object=$(sh get-object.sh "$document" "$tmp")
+if test -n "$publication" -a -z "$document"
+then
+	object=$(sh get-first-object.sh "$pm_object" "$tmp")
+	document=$(s1kd-metadata -n code "$object")
+else
+	object=$(sh get-object.sh "$document" "$tmp")
+fi
 object_status=$?
 
 # Generate list of properties for the object
@@ -127,22 +139,25 @@ EOF
 # Generate publication TOC
 if test -n "$publication"
 then
-	pm_object=$(sh get-object.sh "$publication" "$tmp")
-	
-	if test "$?" -eq 0
-	then
-		cat <<-EOF
-		<div class="pub-toc">
-		EOF
+	cat <<-EOF
+	<div class="pub-toc">
+	EOF
 
+	if test "$pm_object_status" -eq 0
+	then
 		xml-transform -s html.xsl \
 			-p "publication='$publication'" \
 			"$pm_object"
 
+	else
 		cat <<-EOF
-		</div>
+		<div class="error">Publication not found.</div>
 		EOF
 	fi
+
+	cat <<-EOF
+	</div>
+	EOF
 
 	sh free-object.sh "$pm_object"
 
@@ -169,7 +184,7 @@ then
 		#   1. Re-generate display text
 		#   2. Convert units of measure
 		#   #. Transform to HTML
-		s1kd-aspp -d "$tmp" -cg "$filtered" \
+		s1kd-aspp -d csdb -cg "$filtered" \
 		| s1kd-uom -s "$units" -p "$unit_format" \
 		| xml-transform -s html.xsl \
 			-p "publication='$publication'" \
