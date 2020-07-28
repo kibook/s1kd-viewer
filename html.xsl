@@ -784,6 +784,7 @@
     <xsl:if test="$units">&amp;units=<xsl:value-of select="$units"/></xsl:if>
     <xsl:if test="$unit-format">&amp;unit-format=<xsl:value-of select="$unit-format"/></xsl:if>
     <xsl:if test="$comments">&amp;comments=<xsl:value-of select="$comments"/></xsl:if>
+    <xsl:if test="$changes">&amp;changes=<xsl:value-of select="$changes"/></xsl:if>
     <xsl:if test="$anchor">#<xsl:value-of select="$anchor"/></xsl:if>
   </xsl:template>
 
