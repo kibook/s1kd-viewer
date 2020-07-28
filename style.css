@@ -32,3 +32,7 @@ body {
 	width: 75%;
 	overflow: scroll;
 }
+
+.definition-list th, .definition-list td {
+	vertical-align: top;
+}

@@ -547,7 +547,7 @@
   </xsl:template>
 
   <xsl:template match="definitionList">
-    <table>
+    <table class="definition-list">
       <xsl:call-template name="common-attrs"/>
       <xsl:apply-templates/>
     </table>
