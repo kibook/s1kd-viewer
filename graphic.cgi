@@ -4,22 +4,9 @@ cgi=$(cgi-init)
 
 icn=$(cgi-param "$cgi" icn)
 
-tmp=$(mktemp -d)
+object=$(s1kd-ls -G csdb/"$icn"*)
 
-object=$(sh get-object.sh "$icn" "$tmp")
-object_status=$?
-
-mime=$(file -b --mime-type "$object")
-
-cgi-header "Content-type: $mime"
-
-if test "$object_status" -eq 0
-then
-	cat "$object"
-fi
-
-sh free-object.sh "$object"
-
-rm -r "$tmp"
+cgi-header -n 'Status: 302 Found'
+cgi-header "Location: $object"
 
 cgi-free "$cgi"
