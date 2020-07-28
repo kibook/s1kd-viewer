@@ -8,6 +8,7 @@
   version="1.0">
 
   <xsl:param name="publication"/>
+  <xsl:param name="document"/>
   <xsl:param name="non-applic"/>
   <xsl:param name="units"/>
   <xsl:param name="unit-format"/>
@@ -867,6 +868,14 @@
       <ul>
         <xsl:for-each select="pmEntry|dmRef">
           <li>
+            <xsl:if test="self::dmRef">
+              <xsl:variable name="dmc">
+                <xsl:apply-templates select="dmRefIdent/dmCode"/>
+              </xsl:variable>
+              <xsl:if test="$document = $dmc">
+                <xsl:attribute name="style">font-weight: bold;</xsl:attribute>
+              </xsl:if>
+            </xsl:if>
             <xsl:apply-templates select="."/>
           </li>
         </xsl:for-each>

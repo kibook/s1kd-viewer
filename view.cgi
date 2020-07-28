@@ -147,8 +147,13 @@ then
 	then
 		xml-transform -s html.xsl \
 			-p "publication='$publication'" \
+			-p "document='$document'" \
+			-p "pct='$pct'" \
+			-p "non-applic='$non_applic'" \
+			-p "units='$units'" \
+			-p "unit-format='$unit_format'" \
+			-p "comments='$comments'" \
 			"$pm_object"
-
 	else
 		cat <<-EOF
 		<div class="error">Publication not found.</div>
@@ -188,6 +193,7 @@ then
 		| s1kd-uom -s "$units" -p "$unit_format" \
 		| xml-transform -s html.xsl \
 			-p "publication='$publication'" \
+			-p "document='$document'" \
 			-p "pct='$pct'" \
 			-p "non-applic='$non_applic'" \
 			-p "units='$units'" \
