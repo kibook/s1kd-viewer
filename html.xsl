@@ -429,7 +429,19 @@
   </xsl:template>
 
   <xsl:template match="tgroup">
-    <table style="border: solid 1px black; border-collapse: collapse;">
+    <table>
+      <xsl:attribute name="style">
+        <xsl:text>border-collapse: collapse;</xsl:text>
+        <xsl:if test="parent::table/@pgwide = 1">width: 100%;</xsl:if>
+        <xsl:choose>
+          <xsl:when test="parent::table/@frame = 'topbot'">border-top: solid 1px black; border-bottom: solid 1px black;</xsl:when>
+          <xsl:when test="parent::table/@frame = 'sides'">border-left: solid 1px black; border-right: solid 1px black;</xsl:when>
+          <xsl:when test="parent::table/@frame = 'top'">border-top: solid 1px black;</xsl:when>
+          <xsl:when test="parent::table/@frame = 'bottom'">border-bottom: solid 1px black;</xsl:when>
+          <xsl:when test="parent::table/@frame = 'none'"/>
+          <xsl:otherwise>border: solid 1px black;</xsl:otherwise>
+        </xsl:choose>
+      </xsl:attribute>
       <xsl:apply-templates/>
     </table>
   </xsl:template>
@@ -451,7 +463,16 @@
   <xsl:template match="entry">
     <td>
       <xsl:call-template name="common-attrs">
-        <xsl:with-param name="style">border: solid 1px black</xsl:with-param>
+        <xsl:with-param name="style">
+          <xsl:if test="following-sibling::entry or not(preceding-sibling::entry)">
+            <xsl:variable name="colsep" select="ancestor::*/@colsep[last()]"/>
+            <xsl:if test="not($colsep) or $colsep = 1">border-right: solid 1px black;</xsl:if>
+          </xsl:if>
+          <xsl:if test="parent::row/following-sibling::row or not(parent::row/preceding-sibling::row)">
+            <xsl:variable name="rowsep" select="ancestor::*/@rowsep[last()]"/>
+            <xsl:if test="not($rowsep) or $rowsep = 1">border-bottom: solid 1px black;</xsl:if>
+          </xsl:if>
+        </xsl:with-param>
       </xsl:call-template>
       <xsl:apply-templates/>
     </td>
