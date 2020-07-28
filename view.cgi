@@ -34,25 +34,14 @@ EOF
 pct_assign() {
 	app_i=$(echo "$1" | cut -d : -f 1)
 	app_t=$(echo "$1" | cut -d : -f 2)
-	app_v=$(cat "$2")
-
-	printf "DEBUG: %s : %s = %s\n" "$app_i" "$app_t" "$app_v" >&2
+	app_v=$(cgi-param "$cgi" "$1")
 
 	xml-transform -s configure.xsl -p "ident='$app_i'" -p "type='$app_t'" -p "value='$app_v'" -f "$pct"
 }
 
-find "$cgi/params" -type f | while read param
+cgi-param -a "$cgi" | grep ':' | while read key
 do
-	key=$(urlencode -d $(basename "$param"))
-
-	case "$key" in
-		# Ignore known parameters
-		publication|document|non-applic|units|unit-format|comments)
-			;;
-		*)
-			pct_assign "$key" "$param"
-			;;
-	esac
+	pct_assign "$key"
 done
 
 # Base arguments for s1kd-instance
