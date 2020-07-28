@@ -10,12 +10,14 @@ non_applic=$(cgi-param "$cgi" non-applic)
 units=$(cgi-param "$cgi" units)
 unit_format=$(cgi-param "$cgi" unit-format)
 comments=$(cgi-param "$cgi" comments)
+changes=$(cgi-param "$cgi" changes)
 
 # Default values for parameters
 non_applic=${non_applic:-hide}
 units=${units:-SI}
 unit_format=${units:-SI}
 comments=${comments:-hide}
+changes=${changes:-hide}
 
 # Create temp directories and files
 tmp=$(mktemp -d)   # Temp directory for support files
@@ -129,6 +131,7 @@ xml-transform \
 	-p "units='$units'" \
 	-p "unit-format='$unit_format'" \
 	-p "comments='$comments'" \
+	-p "changes='$changes'" \
 	"$props"
 
 cat <<EOF
@@ -153,6 +156,7 @@ then
 			-p "units='$units'" \
 			-p "unit-format='$unit_format'" \
 			-p "comments='$comments'" \
+			-p "changes='$changes'" \
 			"$pm_object"
 	else
 		cat <<-EOF
@@ -198,7 +202,8 @@ then
 			-p "non-applic='$non_applic'" \
 			-p "units='$units'" \
 			-p "unit-format='$unit_format'" \
-			-p "comments='$comments'"
+			-p "comments='$comments'" \
+			-p "changes='$changes'"
 	else
 		cat <<-EOF
 		<div class="error">This document is not applicable to the selected filters.</div>

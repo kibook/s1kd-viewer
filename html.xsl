@@ -14,6 +14,7 @@
   <xsl:param name="unit-format"/>
   <xsl:param name="pct"/>
   <xsl:param name="comments"/>
+  <xsl:param name="changes"/>
   <xsl:param name="tools-cir"/>
   <xsl:param name="supplies-cir"/>
   <xsl:param name="parts-cir"/>
@@ -817,7 +818,7 @@
     <xsl:param name="style"/>
     <xsl:apply-templates select="@id"/>
     <xsl:attribute name="style">
-      <xsl:if test="@changeMark = 1">
+      <xsl:if test="$changes = 'show' and @changeMark = 1">
         <xsl:text>background-color:</xsl:text>
         <xsl:choose>
           <xsl:when test="@changeType = 'add'">green</xsl:when>
@@ -832,7 +833,7 @@
       </xsl:if>
       <xsl:value-of select="$style"/>
     </xsl:attribute>
-    <xsl:if test="@reasonForUpdateRefIds">
+    <xsl:if test="$changes = 'show' and @reasonForUpdateRefIds">
       <xsl:variable name="rfus" select="//reasonForUpdate"/>
       <xsl:attribute name="title">
         <xsl:for-each select="str:tokenize(@reasonForUpdateRefIds, ' ')">

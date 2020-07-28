@@ -12,6 +12,7 @@
   <xsl:param name="units"/>
   <xsl:param name="unit-format"/>
   <xsl:param name="comments"/>
+  <xsl:param name="changes"/>
 
   <xsl:variable name="assigns" select="document($pct)//assign"/>
 
@@ -111,6 +112,23 @@
                 <xsl:with-param name="label">Show</xsl:with-param>
                 <xsl:with-param name="value">show</xsl:with-param>
                 <xsl:with-param name="selected" select="$comments = 'show'"/>
+              </xsl:call-template>
+            </select>
+          </td>
+        </xsl:if>
+        <xsl:if test="$changes">
+          <td title="Show change marks">Changes: </td>
+          <td>
+            <select name="changes">
+              <xsl:call-template name="add-option">
+                <xsl:with-param name="label">Hide</xsl:with-param>
+                <xsl:with-param name="value">hide</xsl:with-param>
+                <xsl:with-param name="selected" select="$changes = 'hide'"/>
+              </xsl:call-template>
+              <xsl:call-template name="add-option">
+                <xsl:with-param name="label">Show</xsl:with-param>
+                <xsl:with-param name="value">show</xsl:with-param>
+                <xsl:with-param name="selected" select="$changes = 'show'"/>
               </xsl:call-template>
             </select>
           </td>
