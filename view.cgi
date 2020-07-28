@@ -20,10 +20,10 @@ comments=${comments:-hide}
 changes=${changes:-hide}
 
 # Create temp directories and files
-tmp=$(mktemp -d)   # Temp directory for support files
-props=$(mktemp)    # Temp file for properties list
-pct=$(mktemp)      # Temp file for PCT
-filtered=$(mktemp) # Temp file for filtered object
+tmp=$(mktemp -d)      # Temp directory for support files
+props=$(mktemp)       # Temp file for properties list
+pct=$(mktemp)         # Temp file for PCT
+filtered=$(mktemp -d) # Temp directory for filtered object
 
 # Create a new PCT from the base PCT
 cp pct.xml "$pct"
@@ -72,12 +72,16 @@ if test -n "$publication"
 then
 	pm_object=$(sh get-object.sh "$publication" "$tmp")
 	pm_object_status=$?
+
+	filtered_pm=$(mktemp -d)
+	$s1kd_instance -P "$pct" -p filters -o "$filtered_pm/object.xml" "$pm_object"
+	sh free-object.sh "$pm_object"
 fi
 
 # Fetch the object
 if test -n "$publication" -a -z "$document"
 then
-	object=$(sh get-first-object.sh "$pm_object" "$tmp")
+	object=$(sh get-first-object.sh "$filtered_pm/object.xml" "$tmp")
 	document=$(s1kd-metadata -n code "$object")
 else
 	object=$(sh get-object.sh "$document" "$tmp")
@@ -144,8 +148,7 @@ then
 
 	if test "$pm_object_status" -eq 0
 	then
-		$s1kd_instance -P "$pct" -p filters "$pm_object" \
-		| xml-transform -s html.xsl \
+		xml-transform -s html.xsl \
 			-p "publication='$publication'" \
 			-p "document='$document'" \
 			-p "pct='$pct'" \
@@ -153,7 +156,8 @@ then
 			-p "units='$units'" \
 			-p "unit-format='$unit_format'" \
 			-p "comments='$comments'" \
-			-p "changes='$changes'"
+			-p "changes='$changes'" \
+			"$filtered_pm/object.xml"
 	else
 		cat <<-EOF
 		<div class="error">Publication not found.</div>
@@ -164,7 +168,7 @@ then
 	</div>
 	EOF
 
-	sh free-object.sh "$pm_object"
+	rm -r "$filtered_pm"
 
 	cat <<-EOF
 	<div class="main-float">
@@ -179,17 +183,16 @@ fi
 if test "$object_status" -eq 0
 then
 	# Filter the object
-	rm "$filtered"
-	$s1kd_instance -P "$pct" -p filters -o "$filtered" -w "$object"
+	$s1kd_instance -P "$pct" -p filters -o "$filtered/object.xml" -w "$object"
 
 	# Check if the object was applicable to the selected filters
-	if test -e "$filtered"
+	if test -e "$filtered/object.xml"
 	then
 		# Transform the object:
 		#   1. Re-generate display text
 		#   2. Convert units of measure
 		#   #. Transform to HTML
-		s1kd-aspp -d csdb -cg "$filtered" \
+		s1kd-aspp -d csdb -cg "$filtered/object.xml" \
 		| s1kd-uom -s "$units" -p "$unit_format" \
 		| xml-transform -s html.xsl \
 			-p "publication='$publication'" \
@@ -223,7 +226,7 @@ sh free-object.sh "$object"
 
 # Clean up temp directories and files
 rm -r "$tmp"
-rm "$filtered"
+rm -r "$filtered"
 rm "$props"
 rm "$pct"
 
