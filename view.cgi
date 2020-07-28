@@ -25,12 +25,8 @@ props=$(mktemp)    # Temp file for properties list
 pct=$(mktemp)      # Temp file for PCT
 filtered=$(mktemp) # Temp file for filtered object
 
-# Create an empty PCT
-cat <<EOF > "$pct"
-<products>
-<product id="filters"/>
-</products>
-EOF
+# Create a new PCT from the base PCT
+cp pct.xml "$pct"
 
 # Read assigns from parameters and add to PCT
 pct_assign() {
