@@ -760,6 +760,7 @@
     <xsl:if test="$non-applic">&amp;non-applic=<xsl:value-of select="$non-applic"/></xsl:if>
     <xsl:if test="$units">&amp;units=<xsl:value-of select="$units"/></xsl:if>
     <xsl:if test="$unit-format">&amp;unit-format=<xsl:value-of select="$unit-format"/></xsl:if>
+    <xsl:if test="$comments">&amp;comments=<xsl:value-of select="$comments"/></xsl:if>
     <xsl:if test="$anchor">#<xsl:value-of select="$anchor"/></xsl:if>
   </xsl:template>
 
