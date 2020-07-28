@@ -144,7 +144,8 @@ then
 
 	if test "$pm_object_status" -eq 0
 	then
-		xml-transform -s html.xsl \
+		$s1kd_instance -P "$pct" -p filters "$pm_object" \
+		| xml-transform -s html.xsl \
 			-p "publication='$publication'" \
 			-p "document='$document'" \
 			-p "pct='$pct'" \
@@ -152,8 +153,7 @@ then
 			-p "units='$units'" \
 			-p "unit-format='$unit_format'" \
 			-p "comments='$comments'" \
-			-p "changes='$changes'" \
-			"$pm_object"
+			-p "changes='$changes'"
 	else
 		cat <<-EOF
 		<div class="error">Publication not found.</div>
