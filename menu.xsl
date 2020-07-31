@@ -162,16 +162,23 @@
       <xsl:text>:</xsl:text>
     </td>
     <td>
-      <select name="{$ident}:{$type}">
-        <option/>
-        <xsl:for-each select="value">
-          <xsl:call-template name="add-option">
-            <xsl:with-param name="label" select="."/>
-            <xsl:with-param name="value" select="."/>
-            <xsl:with-param name="selected" select="$assign/@applicPropertyValue = ."/>
-          </xsl:call-template>
-        </xsl:for-each>
-      </select>
+      <xsl:choose>
+        <xsl:when test="value">
+          <select name="{$ident}:{$type}">
+            <option/>
+            <xsl:for-each select="value">
+              <xsl:call-template name="add-option">
+                <xsl:with-param name="label" select="."/>
+                <xsl:with-param name="value" select="."/>
+                <xsl:with-param name="selected" select="$assign/@applicPropertyValue = ."/>
+              </xsl:call-template>
+            </xsl:for-each>
+          </select>
+        </xsl:when>
+        <xsl:otherwise>
+          <input type="text" name="{$ident}:{$type}" value="{$assign/@applicPropertyValue}"/>
+        </xsl:otherwise>
+      </xsl:choose>
     </td>
   </xsl:template>
 

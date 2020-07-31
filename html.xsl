@@ -611,7 +611,9 @@
   </xsl:template>
 
   <xsl:template match="supportEquipDescr|supplyDescr|spareDescr">
-    <xsl:apply-templates select="@applicRefId" mode="tabular"/>
+    <xsl:apply-templates select="@applicRefId" mode="tabular">
+      <xsl:with-param name="colspan">4</xsl:with-param>
+    </xsl:apply-templates>
     <tr>
       <xsl:call-template name="common-attrs"/>
       <td style="padding-right: 1em;">
